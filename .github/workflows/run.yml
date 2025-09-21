@@ -26,6 +26,7 @@ jobs:
 
       # Run `uname -r` using a vanilla v6.6 kernel
       - run: |
+          cd ~
           git clone https://github.com/arighi/virtme-ng.git
           cd virtme-ng
           BUILD_VIRTME_NG_INIT=1 pip3 install .
@@ -41,5 +42,6 @@ jobs:
       # Re-run with KVM support
       - name: "Check KVM support"
         run: |
+          cd ~/virtme-ng
           clocksource="/sys/devices/system/clocksource/clocksource0/current_clocksource"
           [ "$(./vng -r v6.14 -- cat "${clocksource}")" = "kvm-clock" ]

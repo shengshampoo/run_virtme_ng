@@ -36,7 +36,7 @@ jobs:
           git clone https://github.com/arighi/virtme-ng.git
           cd virtme-ng
           BUILD_VIRTME_NG_INIT=1 pip3 install .
-          ./vng -r v6.16.8-x64v3-xanmod1 -- uname -r
+          ./vng -r 6.16.8-x64v3-xanmod1 -- uname -r
 
       # Setup KVM support
       - name: "KVM support"
@@ -50,4 +50,4 @@ jobs:
         run: |
           cd ~/virtme-ng
           clocksource="/sys/devices/system/clocksource/clocksource0/current_clocksource"
-          [ "$(./vng -r v6.16.8-x64v3-xanmod1 -- cat "${clocksource}")" = "kvm-clock" ]
+          [ "$(./vng -r 6.16.8-x64v3-xanmod1 -- cat "${clocksource}")" = "kvm-clock" ]

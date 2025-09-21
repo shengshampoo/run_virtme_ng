@@ -27,7 +27,7 @@ jobs:
       # Run `uname -r` using a vanilla v6.6 kernel
       - run: |
           git clone https://github.com/arighi/virtme-ng.git
-          cd cd virtme-ng
+          cd virtme-ng
           BUILD_VIRTME_NG_INIT=1 pip3 install .
           ./vng -r v6.14 -- uname -r
 

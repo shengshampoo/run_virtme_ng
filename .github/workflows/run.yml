@@ -32,13 +32,15 @@ jobs:
           python-version: '3.13'
           # Optional: Cache pip dependencies for faster builds
           cache: 'pip'
+      - name: Install dependencies
+        run: |
+            python -m pip install --upgrade pip
 
       # Run `uname -r` using a vanilla v6.16 kernel
       - run: |
           cd ~
           git clone https://github.com/arighi/virtme-ng.git
           cd virtme-ng
-          python -m pip install --upgrade pip
           BUILD_VIRTME_NG_INIT=1 pip install .
           ./vng -r v6.16.8 -- uname -r
 

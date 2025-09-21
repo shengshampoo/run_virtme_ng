@@ -42,4 +42,4 @@ jobs:
       - name: "Check KVM support"
         run: |
           clocksource="/sys/devices/system/clocksource/clocksource0/current_clocksource"
-          [ "$(./vng -r v6.6 -- cat "${clocksource}")" = "kvm-clock" ]
+          [ "$(./vng -r v6.14 -- cat "${clocksource}")" = "kvm-clock" ]

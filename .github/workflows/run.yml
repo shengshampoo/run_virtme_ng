@@ -20,7 +20,7 @@ jobs:
 
       # Install dependencies
       - run: sudo apt update
-      - run: sudo apt install --yes git qemu-kvm udev iproute2 busybox-static coreutils python3-requests libvirt-clients kbd kmod file rsync zstd udev
+      - run: sudo apt install --yes git qemu-kvm udev iproute2 busybox-static coreutils python3-requests libvirt-clients kbd kmod file rsync zstd udev ca-certificates
 
       ### END DEPENDENCIES ###
 
@@ -29,7 +29,7 @@ jobs:
 
       - name: Register XanMod PGP key
         run: |
-           wget --no-check-certificate -qO - https://dl.xanmod.org/archive.key | sudo gpg --dearmor -vo /etc/apt/keyrings/xanmod-archive-keyring.gpg
+           wget -qO - https://dl.xanmod.org/archive.key | sudo gpg --dearmor -vo /etc/apt/keyrings/xanmod-archive-keyring.gpg
 
       - name: Add XanMod repository
         run: |

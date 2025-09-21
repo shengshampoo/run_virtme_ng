@@ -33,7 +33,7 @@ jobs:
       - name: Add XanMod repository
         run: |
           echo "deb [signed-by=/etc/apt/keyrings/xanmod-archive-keyring.gpg] http://deb.xanmod.org $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/xanmod-release.list
-          sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 86F7D09EE734E623
+          
       - name: Update apt and install XanMod kernel
         run: |
           sudo apt update

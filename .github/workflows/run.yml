@@ -38,7 +38,8 @@ jobs:
           cd ~
           git clone https://github.com/arighi/virtme-ng.git
           cd virtme-ng
-          BUILD_VIRTME_NG_INIT=1 pip3 install .
+          python -m pip install --upgrade pip
+          BUILD_VIRTME_NG_INIT=1 pip install .
           ./vng -r v6.16.8 -- uname -r
 
       # Setup KVM support

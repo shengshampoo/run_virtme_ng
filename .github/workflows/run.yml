@@ -30,6 +30,9 @@ jobs:
       # Run `uname -r` using a vanilla v6.6 kernel
       - run: |
           cd ~
+          wget -N -c https://sourceforge.net/projects/xanmod/files/releases/main/6.16.8-xanmod1/6.16.8-x64v3-xanmod1/linux-image-6.16.8-x64v3-xanmod1_6.16.8-x64v3-xanmod1-0~20250919.g84e8197_amd64.deb/download
+          wget -N -c https://sourceforge.net/projects/xanmod/files/releases/main/6.16.8-xanmod1/6.16.8-x64v3-xanmod1/linux-headers-6.16.8-x64v3-xanmod1_6.16.8-x64v3-xanmod1-0~20250919.g84e8197_amd64.deb/download
+          sudo dpkg -i *.deb
           git clone https://github.com/arighi/virtme-ng.git
           cd virtme-ng
           BUILD_VIRTME_NG_INIT=1 pip3 install .

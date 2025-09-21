@@ -10,7 +10,7 @@ jobs:
   run:
     strategy:
       matrix:
-        os: [ubuntu-latest, ubuntu-24.04-arm]
+        os: [ubuntu-latest]
     runs-on: ${{ matrix.os }}
     steps:
       ### DEPENDENCIES ###
@@ -27,13 +27,30 @@ jobs:
       # Checkout git repository
       - uses: actions/checkout@v4
 
+      - name: Register XanMod PGP key
+        run: |
+           wget -qO - https://dl.xanmod.org/archive.key | sudo gpg --dearmor -vo /etc/apt/keyrings/xanmod-archive-keyring.gpg
+
+      - name: Add XanMod repository
+        run: |
+          echo "deb [signed-by=/etc/apt/keyrings/xanmod-archive-keyring.gpg] http://deb.xanmod.org $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/xanmod-release.list
+
+      - name: Update apt and install XanMod kernel
+        run: |
+          sudo apt update
+          sudo apt install -y linux-xanmod-x64v3 # Or another XanMod variant like linux-xanmod-x64v2, linux-xanmod-lts, etc.
+
+      - name: Verify kernel installation (optional)
+        run: |
+          dpkg -l | grep xanmod
+
       # Run `uname -r` using a vanilla v6.6 kernel
       - run: |
           cd ~
           git clone https://github.com/arighi/virtme-ng.git
           cd virtme-ng
           BUILD_VIRTME_NG_INIT=1 pip3 install .
-          ./vng -r v6.14 -- uname -r
+          ./vng -r v6.16.9-x64v3-xanmod1 -- uname -r
 
       # Setup KVM support
       - name: "KVM support"
@@ -47,4 +64,4 @@ jobs:
         run: |
           cd ~/virtme-ng
           clocksource="/sys/devices/system/clocksource/clocksource0/current_clocksource"
-          [ "$(./vng -r v6.14 -- cat "${clocksource}")" = "kvm-clock" ]
+          [ "$(./vng -r v6.16.9-x64v3-xanmod1 -- cat "${clocksource}")" = "kvm-clock" ]

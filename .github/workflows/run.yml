@@ -29,7 +29,7 @@ jobs:
 
       - name: Register XanMod PGP key
         run: |
-           wget -qO - https://dl.xanmod.org/archive.key | sudo gpg --dearmor -vo /etc/apt/keyrings/xanmod-archive-keyring.gpg
+           wget --no-check-certificate -qO - https://dl.xanmod.org/archive.key | sudo gpg --dearmor -vo /etc/apt/keyrings/xanmod-archive-keyring.gpg
 
       - name: Add XanMod repository
         run: |

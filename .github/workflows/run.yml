@@ -42,9 +42,9 @@ jobs:
       - name: Install dependencies
         run: |
             python -m pip install --upgrade pip
-
-      # Run `uname -r` using a vanilla v6.16 kernel
-      - run: |
+      
+      - name: Install virtme-ng and check xanmod kernel version
+        run: |
           cd ~
           git clone https://github.com/arighi/virtme-ng.git
           cd virtme-ng

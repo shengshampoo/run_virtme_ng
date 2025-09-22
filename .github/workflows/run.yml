@@ -85,6 +85,8 @@ jobs:
           sudo cp /usr/src/linux-headers-6.16.8-x64v3-xanmod1/scripts/Makefile.modfinal /usr/src/linux-headers-6.16.8-x64v3-xanmod1/scripts/Makefile.modfinal.old
           sudo sed -i -e '/ifdef CONFIG_DEBUG_INFO_BTF_MODULES/,+2d' /usr/src/linux-headers-6.16.8-x64v3-xanmod1/scripts/Makefile.modfinal
           sudo ~/virtme-ng/vng -r 6.16.8-x64v3-xanmod1 -- make
+          tar -I 'xz -9' -vcf amneziawg.ko.tar.xz ./amneziawg.ko
+          cp ./amneziawg.ko.tar.xz ~/
           
       # Compile kernel module
       - name: "Compile kernel module - ovpn-dco"
@@ -97,20 +99,12 @@ jobs:
           git clone https://github.com/OpenVPN/ovpn-dco
           cd ovpn-dco
           sudo ~/virtme-ng/vng -r 6.16.8-x64v3-xanmod1 -- make
-         
-      # Compile kernel module
-      - name: "Compile kernel module - quic"
-        env:
-          CC: clang
-          CXX: clang++
-          LDFLAGS: "${LDFLAGS} -fuse-ld=lld -flto=thin"
-        run: |          
-          cd ~
-          git clone https://github.com/lxin/quic
-          cd quic
-          sh ./autogen.sh
-          export CC=clang
-          export CXX=clang++
-          sudo ~/virtme-ng/vng -r 6.16.8-x64v3-xanmod1 -- ./configure --prefix=/usr/local/quicktls
-          sudo ~/virtme-ng/vng -r 6.16.8-x64v3-xanmod1 -- make
-          sudo ~/virtme-ng/vng -r 6.16.8-x64v3-xanmod1 -- make install
+          tar -I 'xz -9' -vcf ovpn-dco-v2.ko.tar.xz ./ovpn-dco-v2.ko
+          cp ./ovpn-dco-v2.ko.tar.xz ~/
+
+      - name: Upload kernel modules
+        uses: actions/upload-artifact@v4
+        with:
+          name: kernel_modules_ko
+          path: ~/amneziawg.ko.tar.xz ~/ovpn-dco-v2.ko.tar.xz
+  

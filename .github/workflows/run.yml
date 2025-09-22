@@ -24,6 +24,7 @@ jobs:
          echo 'deb [signed-by=/usr/share/keyrings/xanmod-archive-keyring.gpg] http://deb.xanmod.org releases main' | sudo tee /etc/apt/sources.list.d/xanmod-release.list
       - run: sudo apt update
       - run: sudo apt install --yes git qemu-kvm udev iproute2 busybox-static coreutils python3-requests libvirt-clients kbd kmod file rsync zstd udev linux-xanmod-x64v3      
+      - run: sudo apt install --yes curl pkg-config libgnutls28-dev libtool gnutls-bin libelf-dev kmod
 
       ### END DEPENDENCIES ###
 
@@ -84,4 +85,14 @@ jobs:
           sudo cp /usr/src/linux-headers-6.16.8-x64v3-xanmod1/scripts/Makefile.modfinal /usr/src/linux-headers-6.16.8-x64v3-xanmod1/scripts/Makefile.modfinal.old
           sudo sed -i -e '/ifdef CONFIG_DEBUG_INFO_BTF_MODULES/,+2d' /usr/src/linux-headers-6.16.8-x64v3-xanmod1/scripts/Makefile.modfinal
           sudo ~/virtme-ng/vng -r 6.16.8-x64v3-xanmod1 -- make
-
+          cd ~
+          git clone https://github.com/OpenVPN/ovpn-dco
+          cd ovpn-dco
+          sudo ~/virtme-ng/vng -r 6.16.8-x64v3-xanmod1 -- make
+          cd ~
+          git clone https://github.com/lxin/quic
+          cd quic
+          sudo ~/virtme-ng/vng -r 6.16.8-x64v3-xanmod1 -- ./autogen.sh
+          sudo ~/virtme-ng/vng -r 6.16.8-x64v3-xanmod1 -- ./configure --prefix=/usr/local/quicktls
+          sudo ~/virtme-ng/vng -r 6.16.8-x64v3-xanmod1 -- make
+          sudo ~/virtme-ng/vng -r 6.16.8-x64v3-xanmod1 -- make install

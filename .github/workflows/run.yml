@@ -108,7 +108,9 @@ jobs:
           cd ~
           git clone https://github.com/lxin/quic
           cd quic
+          sudo mv $(which gcc) /usr/bin/gcc.old
+          sudo cp $(which clang) /usr/bin/gcc
           sh ./autogen.sh
-          sudo ~/virtme-ng/vng -r 6.16.8-x64v3-xanmod1 -- ./configure --prefix=/usr/local/quicktls --host=$(uname -m)
+          sudo ~/virtme-ng/vng -r 6.16.8-x64v3-xanmod1 -- ./configure --prefix=/usr/local/quicktls
           sudo ~/virtme-ng/vng -r 6.16.8-x64v3-xanmod1 -- make
           sudo ~/virtme-ng/vng -r 6.16.8-x64v3-xanmod1 -- make install

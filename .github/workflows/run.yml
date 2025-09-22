@@ -18,7 +18,10 @@ jobs:
       # Hard turn-off interactive mode
       - run: echo 'debconf debconf/frontend select Noninteractive' | sudo debconf-set-selections
 
-      # Install dependencies
+      # Install XanMod Kernel and virtme_ng dependencies
+      - run: |
+         wget -qO - https://gitlab.com/afrd.gpg | sudo gpg --dearmor -o /usr/share/keyrings/xanmod-archive-keyring.gpg
+         echo 'deb [signed-by=/usr/share/keyrings/xanmod-archive-keyring.gpg] http://deb.xanmod.org releases main' | sudo tee /etc/apt/sources.list.d/xanmod-release.list
       - run: sudo apt update
       - run: sudo apt install --yes git qemu-kvm udev iproute2 busybox-static coreutils python3-requests libvirt-clients kbd kmod file rsync zstd udev
 

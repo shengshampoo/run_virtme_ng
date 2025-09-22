@@ -109,8 +109,8 @@ jobs:
           git clone https://github.com/lxin/quic
           cd quic
           sh ./autogen.sh
-          sudo update-alternatives --set gcc $(which clang)
-          sudo update-alternatives --set g++ $(which clang++)
+          export CC=clang
+          export CXX=clang++
           sudo ~/virtme-ng/vng -r 6.16.8-x64v3-xanmod1 -- ./configure --prefix=/usr/local/quicktls
           sudo ~/virtme-ng/vng -r 6.16.8-x64v3-xanmod1 -- make
           sudo ~/virtme-ng/vng -r 6.16.8-x64v3-xanmod1 -- make install

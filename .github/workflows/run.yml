@@ -64,6 +64,10 @@ jobs:
 
       # Compile kernel module
       - name: "Compile kernel module"
+        env: 
+          CC: "clang"
+          CXX: "clang"
+          LDFLAGS: "${LDFLAGS} -fuse-ld=lld -flto=thin"
         run: |
           cd ~
           git clone https://github.com/amnezia-vpn/amneziawg-linux-kernel-module        

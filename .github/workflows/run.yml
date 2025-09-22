@@ -33,7 +33,7 @@ jobs:
         uses: KyleMayes/install-llvm-action@v2
         with:
           version: "19.1.7"
-          arch: "x86-64"      
+          arch: "x64"      
 
       - name: Set CC environment variable and build
         run: |

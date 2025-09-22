@@ -24,8 +24,7 @@ jobs:
          echo 'deb [signed-by=/usr/share/keyrings/xanmod-archive-keyring.gpg] http://deb.xanmod.org releases main' | sudo tee /etc/apt/sources.list.d/xanmod-release.list
       - run: sudo apt update
       - run: sudo apt install --yes git qemu-kvm udev iproute2 busybox-static coreutils python3-requests libvirt-clients kbd kmod file rsync zstd udev linux-xanmod-x64v3      
-      - run: sudo apt install --yes curl pkg-config libgnutls28-dev libtool gnutls-bin libelf-dev kmod
-
+      
       ### END DEPENDENCIES ###
 
       # Checkout git repository

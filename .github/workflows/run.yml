@@ -22,13 +22,18 @@ jobs:
       - run: |
          wget -qO - https://gitlab.com/afrd.gpg | sudo gpg --dearmor -o /usr/share/keyrings/xanmod-archive-keyring.gpg
          echo 'deb [signed-by=/usr/share/keyrings/xanmod-archive-keyring.gpg] http://deb.xanmod.org releases main' | sudo tee /etc/apt/sources.list.d/xanmod-release.list
-      - run: wget https://apt.llvm.org/llvm.sh && chmod +x ./llvm.sh && sudo ./llvm.sh 20
       - run: sudo apt update
       - run: sudo apt install --yes git qemu-kvm udev iproute2 busybox-static coreutils python3-requests libvirt-clients kbd kmod file rsync zstd udev linux-xanmod-x64v3      
       
       ### END DEPENDENCIES ###
 
       # Checkout git repository
+      - uses: actions/checkout@v4
+      - name: Install LLVM and Clang
+        uses: KyleMayes/install-llvm-action@v2
+        with:
+          version: "20.1.4"
+          arch: "x64"            
       - name: Set up Python 3.13
         uses: actions/setup-python@v6
         with:
@@ -64,13 +69,13 @@ jobs:
       # Compile kernel module
       - name: "Compile kernel module - amneziawg"
         env:
-          CC: $(which clang-20)
-          CXX: $(which clang++-20)
+          CC: $(which clang)
+          CXX: $(which clang++)
           LDFLAGS: "-fuse-ld=lld -flto=thin"
         run: |
-          sudo cp $(which clang-20) /usr/bin/cc
-          sudo cp $(which clang++-20) /usr/bin/c++
-          sudo cp $(which lld-20) /usr/bin/ld          
+          sudo cp $(which clang) /usr/bin/cc
+          sudo cp $(which clang) /usr/bin/c++
+          sudo cp $(which lld) /usr/bin/ld          
           cd ~
           git clone https://github.com/amnezia-vpn/amneziawg-linux-kernel-module        
           cd amneziawg-linux-kernel-module/src

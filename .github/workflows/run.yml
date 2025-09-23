@@ -71,7 +71,6 @@ jobs:
         run: |
           sudo cp $(which clang) /usr/bin/cc
           sudo cp $(which clang++) /usr/bin/c++
-          sudo cp $(which lld) /usr/bin/ld
           cd ~
           git clone https://github.com/amnezia-vpn/amneziawg-linux-kernel-module        
           cd amneziawg-linux-kernel-module/src

@@ -1,4 +1,4 @@
-name: Run
+name: Run -2
 
 on:
   push:
@@ -67,7 +67,7 @@ jobs:
           cd linux-6.16.8-xanmod1
           ~/virtme-ng/virtme-configkernel --defconfig
           make ARCH=x86 CROSS_COMPILE=x86_64-linux-gnu- -j$(nproc)
-          vng -- uname -r
+          ~/virtme-ng/vng -- uname -r
           
           
 

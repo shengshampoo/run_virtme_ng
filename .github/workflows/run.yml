@@ -69,8 +69,8 @@ jobs:
       # Compile kernel module
       - name: "Compile kernel module - amneziawg"
         env:
-          cc: clang
-          cxx: clang++
+          cc: $(which clang)
+          cxx: $(which clang++)
         run: |
           cd ~
           git clone https://github.com/amnezia-vpn/amneziawg-linux-kernel-module        
@@ -85,8 +85,8 @@ jobs:
       # Compile kernel module
       - name: "Compile kernel module - ovpn-dco"
         env:
-          cc: clang
-          cxx: clang++
+          cc: $(which clang)
+          cxx: $(which clang++)
         run: |        
           cd ~
           git clone https://github.com/OpenVPN/ovpn-dco

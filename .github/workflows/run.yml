@@ -85,7 +85,7 @@ jobs:
           sudo cp /usr/src/linux-headers-6.16.8-x64v3-xanmod1/scripts/Makefile.modfinal /usr/src/linux-headers-6.16.8-x64v3-xanmod1/scripts/Makefile.modfinal.old
           sudo sed -i -e '/ifdef CONFIG_DEBUG_INFO_BTF_MODULES/,+2d' /usr/src/linux-headers-6.16.8-x64v3-xanmod1/scripts/Makefile.modfinal
           sudo ~/virtme-ng/vng -r 6.16.8-x64v3-xanmod1 -- make
-          sudo ls amneziawg-linux-kernel-module/src/amneziawg.ko
+          sudo ls ~/amneziawg-linux-kernel-module/src/amneziawg.ko
           
       # Compile kernel module
       - name: "Compile kernel module - ovpn-dco"

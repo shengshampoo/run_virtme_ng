@@ -72,7 +72,11 @@ jobs:
         env:
           CC: $(which clang)
           CXX: $(which clang++)
+          LDFLAGS: "${LDFLAGS} -fuse-ld=lld -flto=thin"
         run: |
+          sudo cp $(which clang) /usr/bin/cc
+          sudo cp $(which clang++) /usr/bin/c++
+          sudo cp $(which lld) /usr/bin/ld
           cd ~
           git clone https://github.com/amnezia-vpn/amneziawg-linux-kernel-module        
           cd amneziawg-linux-kernel-module/src
@@ -80,7 +84,7 @@ jobs:
           ln -sf linux-6.16.8-xanmod1 kernel
           sudo cp /usr/src/linux-headers-6.16.8-x64v3-xanmod1/scripts/Makefile.modfinal /usr/src/linux-headers-6.16.8-x64v3-xanmod1/scripts/Makefile.modfinal.old
           sudo sed -i -e '/ifdef CONFIG_DEBUG_INFO_BTF_MODULES/,+2d' /usr/src/linux-headers-6.16.8-x64v3-xanmod1/scripts/Makefile.modfinal
-          sudo ~/virtme-ng/vng -r 6.16.8-x64v3-xanmod1 -- make CC=$(which clang) CXX=$(which clang++) LDFLAGS="${LDFLAGS} -fuse-ld=lld -flto=thin"
+          sudo ~/virtme-ng/vng -r 6.16.8-x64v3-xanmod1 -- make
           sudo ls ~/amneziawg-linux-kernel-module/src/
           
       # Compile kernel module
@@ -92,5 +96,5 @@ jobs:
           cd ~
           git clone https://github.com/OpenVPN/ovpn-dco
           cd ovpn-dco
-          sudo ~/virtme-ng/vng -r 6.16.8-x64v3-xanmod1 -- make CC=$(which clang) CXX=$(which clang++) LDFLAGS="${LDFLAGS} -fuse-ld=lld -flto=thin"
+          sudo ~/virtme-ng/vng -r 6.16.8-x64v3-xanmod1 -- make
           sudo ls ./drivers/net/ovpn-dco/

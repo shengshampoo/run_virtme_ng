@@ -51,7 +51,6 @@ jobs:
           sudo ./vng -r 6.16.8-x64v3-xanmod1 -- uname -r
           sudo ./vng -r 6.16.8-x64v3-xanmod1 -- uname -o
           sudo ./vng -r 6.16.8-x64v3-xanmod1 -- uname -a
-          sudo ./vng -r 6.16.8-x64v3-xanmod1 -- docker run -t --rm silkeh/clang:dev-bookworm uname -a
         
       # Setup KVM support
       - name: "KVM support"

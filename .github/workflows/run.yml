@@ -48,10 +48,9 @@ jobs:
           git clone https://github.com/arighi/virtme-ng.git
           cd virtme-ng
           BUILD_VIRTME_NG_INIT=1 pip install .
-          sudo chmod +r /boot/initrd.img-6.16.8-x64v3-xanmod1
-          ./vng -r 6.16.8-x64v3-xanmod1 -- uname -r
-          ./vng -r 6.16.8-x64v3-xanmod1 -- uname -o
-          ./vng -r 6.16.8-x64v3-xanmod1 -- uname -a
+          sudo ./vng -r 6.16.8-x64v3-xanmod1 -- uname -r
+          sudo ./vng -r 6.16.8-x64v3-xanmod1 -- uname -o
+          sudo ./vng -r 6.16.8-x64v3-xanmod1 -- uname -a
         
       # Setup KVM support
       - name: "KVM support"
@@ -84,7 +83,7 @@ jobs:
           ln -sf linux-6.16.8-xanmod1 kernel
           sudo cp /usr/src/linux-headers-6.16.8-x64v3-xanmod1/scripts/Makefile.modfinal /usr/src/linux-headers-6.16.8-x64v3-xanmod1/scripts/Makefile.modfinal.old
           sudo sed -i -e '/ifdef CONFIG_DEBUG_INFO_BTF_MODULES/,+2d' /usr/src/linux-headers-6.16.8-x64v3-xanmod1/scripts/Makefile.modfinal
-          sudo ~/virtme-ng/vng -r 6.16.8-x64v3-xanmod1 -- make
+          sudo ~/virtme-ng/vng -r 6.16.8-x64v3-xanmod1 -- make CC=$(which clang) CXX=$(which clang++) LDFLAGS="${LDFLAGS} -fuse-ld=lld -flto=thin"
           sudo ls ~/amneziawg-linux-kernel-module/src/
           
       # Compile kernel module
@@ -92,9 +91,10 @@ jobs:
         env:
           CC: $(which clang)
           CXX: $(which clang++)
+          LDFLAGS: "${LDFLAGS} -fuse-ld=lld -flto=thin"
         run: |        
           cd ~
           git clone https://github.com/OpenVPN/ovpn-dco
           cd ovpn-dco
-          sudo ~/virtme-ng/vng -r 6.16.8-x64v3-xanmod1 -- make
+          sudo ~/virtme-ng/vng -r 6.16.8-x64v3-xanmod1 -- make CC=$(which clang) CXX=$(which clang++) LDFLAGS="${LDFLAGS} -fuse-ld=lld -flto=thin"
           sudo ls ./drivers/net/ovpn-dco/

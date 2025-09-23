@@ -22,10 +22,9 @@ jobs:
       - run: |
          wget -qO - https://gitlab.com/afrd.gpg | sudo gpg --dearmor -o /usr/share/keyrings/xanmod-archive-keyring.gpg
          echo 'deb [signed-by=/usr/share/keyrings/xanmod-archive-keyring.gpg] http://deb.xanmod.org releases main' | sudo tee /etc/apt/sources.list.d/xanmod-release.list
+      - run: wget https://apt.llvm.org/llvm.sh && chmod +x ./llvm.sh && sudo ./llvm.sh 20
       - run: sudo apt update
       - run: sudo apt install --yes git qemu-kvm udev iproute2 busybox-static coreutils python3-requests libvirt-clients kbd kmod file rsync zstd udev linux-xanmod-x64v3      
-      - run: sudo apt install --yes --no-install-recommends dkms libdw-dev
-      - run: wget https://apt.llvm.org/llvm.sh && chmod +x ./llvm.sh && sudo ./llvm.sh 20
       
       ### END DEPENDENCIES ###
 
@@ -71,7 +70,7 @@ jobs:
         run: |
           sudo cp $(which clang-20) /usr/bin/cc
           sudo cp $(which clang++-20) /usr/bin/c++
-          sudo cp $(which ldd-20) /usr/bin/ld          
+          sudo cp $(which lld-20) /usr/bin/ld          
           cd ~
           git clone https://github.com/amnezia-vpn/amneziawg-linux-kernel-module        
           cd amneziawg-linux-kernel-module/src

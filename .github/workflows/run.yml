@@ -65,12 +65,13 @@ jobs:
       # Compile kernel module
       - name: "Compile kernel module - amneziawg"
         env:
-          CC: $(which clang)
-          CXX: $(which clang++)
+          CC: $(which clang-20)
+          CXX: $(which clang++-20)
           LDFLAGS: "-fuse-ld=lld -flto=thin"
         run: |
-          sudo cp $(which clang) /usr/bin/cc
-          sudo cp $(which clang++) /usr/bin/c++
+          sudo cp $(which clang-20) /usr/bin/cc
+          sudo cp $(which clang++-20) /usr/bin/c++
+          sudo cp $(which ldd-20) /usr/bin/ld          
           cd ~
           git clone https://github.com/amnezia-vpn/amneziawg-linux-kernel-module        
           cd amneziawg-linux-kernel-module/src

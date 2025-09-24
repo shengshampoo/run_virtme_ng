@@ -48,8 +48,7 @@ jobs:
           git clone https://github.com/arighi/virtme-ng.git
           cd virtme-ng
           BUILD_VIRTME_NG_INIT=1 pip install .
-          ~/virtme-ng/vng -r v6.16 -- uname -a
-          sudo ln -sf ~/.docker/run/docker.sock /var/run/docker.sock
+          sudo chmod 666 /var/run/docker.sock
           sudo ~/virtme-ng/vng -r 6.16.8-x64v3-xanmod1 -- docker run -t --rm silkeh/clang:dev-bookworm uname -a
       
       # Setup KVM support

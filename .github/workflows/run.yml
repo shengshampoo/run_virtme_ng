@@ -48,8 +48,10 @@ jobs:
           git clone https://github.com/arighi/virtme-ng.git
           cd virtme-ng
           BUILD_VIRTME_NG_INIT=1 pip install .
-          sudo cp /boot/vmlinuz-6.16.8-x64v3-xanmod1 . && sudo chmod +r ./vmlinuz-6.16.8-x64v3-xanmod1
-          ./vng -r ./vmlinuz-6.16.8-x64v3-xanmod1 -- uname -a
+          uname -a
+          ./vng -r 6.11.0-1018-azure -- uname -a
+          sudo ./vng -r 6.16.8-x64v3-xanmod1 -- uname -a
+          
       
       # Setup KVM support
       - name: "KVM support"

@@ -49,6 +49,8 @@ jobs:
           cd virtme-ng
           BUILD_VIRTME_NG_INIT=1 pip install .
           uname -a
+          sudo chmod a+r /boot/vmlinuz-6.11.0-1018-azure
+          sudo chmod a+r /boot/vmlinuz-6.16.8-x64v3-xanmod1
           ./vng -r 6.11.0-1018-azure -- uname -a
           sudo ./vng -r 6.16.8-x64v3-xanmod1 -- uname -a
           

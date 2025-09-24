@@ -49,7 +49,7 @@ jobs:
           cd virtme-ng
           BUILD_VIRTME_NG_INIT=1 pip install .
           ~/virtme-ng/vng -r v6.16 -- uname -a
-          ~/virtme-ng/vng -r 6.16.8-x64v3-xanmod1 -- docker run -t --rm --privileged=true silkeh/clang:dev-bookworm uname -a
+          sudo ~/virtme-ng/vng -r 6.16.8-x64v3-xanmod1 -- docker run -t --rm silkeh/clang:dev-bookworm uname -a
       
       # Setup KVM support
       - name: "KVM support"

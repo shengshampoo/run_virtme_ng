@@ -76,6 +76,8 @@ jobs:
           sudo cp $(which clang++) /usr/bin/c++
           sudo cp $(which lld) /usr/bin/ld          
           cd ~
+          mkdir ~/tmpdir
+          export AWG_TEMP_DIR="~/tmpdir"
           git clone https://github.com/amnezia-vpn/amneziawg-linux-kernel-module        
           cd amneziawg-linux-kernel-module/src
           curl -sL https://gitlab.com/xanmod/linux/-/archive/6.16.8-xanmod1/linux-6.16.8-xanmod1.tar.bz2 | tar x --bzip

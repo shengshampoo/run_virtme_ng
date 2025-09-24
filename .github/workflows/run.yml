@@ -79,14 +79,13 @@ jobs:
           sudo cp $(which clang++) /usr/bin/c++
           sudo cp $(which lld) /usr/bin/ld          
           cd ~
-          mkdir ~/module_ko
           git clone https://github.com/amnezia-vpn/amneziawg-linux-kernel-module        
           cd amneziawg-linux-kernel-module/src
           curl -sL https://gitlab.com/xanmod/linux/-/archive/6.16.8-xanmod1/linux-6.16.8-xanmod1.tar.bz2 | tar x --bzip
           ln -sf linux-6.16.8-xanmod1 kernel
           sudo cp /usr/src/linux-headers-6.16.8-x64v3-xanmod1/scripts/Makefile.modfinal /usr/src/linux-headers-6.16.8-x64v3-xanmod1/scripts/Makefile.modfinal.old
           sudo sed -i -e '/ifdef CONFIG_DEBUG_INFO_BTF_MODULES/,+2d' /usr/src/linux-headers-6.16.8-x64v3-xanmod1/scripts/Makefile.modfinal
-          ~/virtme-ng/vng -r 6.16.8-x64v3-xanmod1 --rwdir=/tmp/module_ko=~/module_ko -- "mkdir -p /tmp/module_ko && make && cp *.ko /tmp/module_ko/ && ls /tmp/module_ko"
+          ~/virtme-ng/vng -r 6.16.8-x64v3-xanmod1 --rwdir=~/module_ko -- "mkdir -p ~/module_ko && make && cp *.ko ~/module_ko/ && ls ~/module_ko"
           ls ~/module_ko
           
       # Compile kernel module

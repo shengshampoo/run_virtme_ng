@@ -79,13 +79,14 @@ jobs:
           sudo cp $(which clang++) /usr/bin/c++
           sudo cp $(which lld) /usr/bin/ld          
           cd ~
+          mkdir ~/module_ko
           git clone https://github.com/amnezia-vpn/amneziawg-linux-kernel-module        
           cd amneziawg-linux-kernel-module/src
           curl -sL https://gitlab.com/xanmod/linux/-/archive/6.16.8-xanmod1/linux-6.16.8-xanmod1.tar.bz2 | tar x --bzip
           ln -sf linux-6.16.8-xanmod1 kernel
           sudo cp /usr/src/linux-headers-6.16.8-x64v3-xanmod1/scripts/Makefile.modfinal /usr/src/linux-headers-6.16.8-x64v3-xanmod1/scripts/Makefile.modfinal.old
           sudo sed -i -e '/ifdef CONFIG_DEBUG_INFO_BTF_MODULES/,+2d' /usr/src/linux-headers-6.16.8-x64v3-xanmod1/scripts/Makefile.modfinal
-          ~/virtme-ng/vng -r 6.16.8-x64v3-xanmod1 -- "make && ls"
+          ~/virtme-ng/vng -r 6.16.8-x64v3-xanmod1 --rwdir=~/module_ko -- "make && ls *.ko && cp *.ko ~/module_ko/"
           ls ~/amneziawg-linux-kernel-module/src/
           find . -name *.ko
           
@@ -99,6 +100,6 @@ jobs:
           cd ~
           git clone https://github.com/OpenVPN/ovpn-dco
           cd ovpn-dco
-          ~/virtme-ng/vng -r 6.16.8-x64v3-xanmod1 -- "make && ls"
+          ~/virtme-ng/vng -r 6.16.8-x64v3-xanmod1 -- "make && ls ./drivers/net/ovpn-dco/*.ko"
           ls ./drivers/net/ovpn-dco/
           find . -name *.ko

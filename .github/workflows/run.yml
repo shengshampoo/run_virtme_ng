@@ -120,7 +120,7 @@ jobs:
           git clone https://github.com/lxin/quic
           cd quic
           sh ./autogen.sh
-          ~/virtme-ng/vng -r 6.16.8-x64v3-xanmod1 --rwdir=~/module_ko -- "./configure --prefix=/usr/local/quicktls && make"
+          ~/virtme-ng/vng -r 6.16.8-x64v3-xanmod1 --rwdir=~/module_ko -- "./configure --host=host --prefix=/usr/local/quicktls && make"
 
       - name: "Compression kernel module"
         run: | 

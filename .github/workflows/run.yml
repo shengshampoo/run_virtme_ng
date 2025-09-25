@@ -104,3 +104,16 @@ jobs:
           cd ovpn-dco
           ~/virtme-ng/vng -r 6.16.8-x64v3-xanmod1 --rwdir=~/module_ko -- "make && cp ./drivers/net/ovpn-dco/*.ko /home/runner/module_ko/"
           ls ~/module_ko
+
+      - name: "Compression kernel module"
+        run: | 
+          sudo apt install --yes lzip
+          cd ~/module_ko
+          tar -I 'lzip -9' -vcf amneziawg.ko.tlz ./amneziawg.ko
+          tar -I 'lzip -9' -vcf ovpn-dco-v2.ko.tlz ./ovpn-dco-v2.ko
+
+      - name: Upload kernel module
+        uses: actions/upload-artifact@v4
+        with:
+          name: module_ko
+          path: ~/module_ko/*.tlz

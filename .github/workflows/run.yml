@@ -120,7 +120,8 @@ jobs:
           git clone https://github.com/lxin/quic
           cd quic
           sh ./autogen.sh
-          ~/virtme-ng/vng -r 6.16.8-x64v3-xanmod1 --rwdir=~/module_ko -- "./configure --host=x86_64-unknown-linux-gnu --prefix=/usr/local/quicktls && make"
+          ~/virtme-ng/vng -r 6.16.8-x64v3-xanmod1 --rwdir=~/module_ko -- "./configure --host=x86_64-unknown-linux-gnu --prefix=/usr/local/quicktls && make && make install && cp /lib/modules/6.16.8-x64v3-xanmod1/extra/quic*.ko /home/runner/module_ko/"
+          ls ~/module_ko
 
       - name: "Compression kernel module"
         run: | 
@@ -128,6 +129,7 @@ jobs:
           cd ~/module_ko
           tar -I 'lzip -9' -vcf amneziawg.ko.tlz ./amneziawg.ko
           tar -I 'lzip -9' -vcf ovpn-dco-v2.ko.tlz ./ovpn-dco-v2.ko
+          tar -I 'lzip -9' -vcf quic.ko.tlz ./quic*.ko
 
       - name: Upload kernel module
         uses: actions/upload-artifact@v4

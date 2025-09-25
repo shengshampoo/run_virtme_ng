@@ -116,7 +116,7 @@ jobs:
           HOSTLDFLAGS: "-fuse-ld=lld -flto=thin"
         run: |        
           cd ~
-          apt install --yes git curl pkg-config libgnutls28-dev libtool gnutls-bin libelf-dev
+          sudo apt install --yes git curl pkg-config libgnutls28-dev libtool gnutls-bin libelf-dev
           git clone https://github.com/lxin/quic
           cd quic
           sh ./autogen.sh

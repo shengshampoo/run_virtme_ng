@@ -11,7 +11,8 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        kernels: [6.16.9-x64v3-xanmod1]
+        kernelbinary: [6.16.9-x64v3-xanmod1]
+        kernelsource: [6.16.9-xanmod1]
     runs-on: ${{ matrix.os }}
     steps:
       ### DEPENDENCIES ###
@@ -24,7 +25,7 @@ jobs:
          wget -qO - https://gitlab.com/afrd.gpg | sudo gpg --dearmor -o /usr/share/keyrings/xanmod-archive-keyring.gpg
          echo 'deb [signed-by=/usr/share/keyrings/xanmod-archive-keyring.gpg] http://deb.xanmod.org releases main' | sudo tee /etc/apt/sources.list.d/xanmod-release.list
       - run: sudo apt update
-      - run: sudo apt install --yes git qemu-kvm udev iproute2 busybox-static coreutils python3-requests libvirt-clients kbd kmod file rsync zstd udev linux-image-${{ matrix.kernels }} linux-headers-${{ matrix.kernels }}
+      - run: sudo apt install --yes git qemu-kvm udev iproute2 busybox-static coreutils python3-requests libvirt-clients kbd kmod file rsync zstd udev linux-image-${{ matrix.kernelbinary }} linux-headers-${{ matrix.kernelbinary }}
       
       ### END DEPENDENCIES ###
 
@@ -49,7 +50,7 @@ jobs:
           git clone https://github.com/arighi/virtme-ng.git
           cd virtme-ng
           BUILD_VIRTME_NG_INIT=1 pip install .
-          sudo ./vng -r ${{ matrix.kernels }} -- uname -a
+          sudo ./vng -r ${{ matrix.kernelbinary }} -- uname -a
           
       
       # Setup KVM support
@@ -64,7 +65,7 @@ jobs:
         run: |
           cd ~/virtme-ng
           clocksource="/sys/devices/system/clocksource/clocksource0/current_clocksource"
-          [ "$(sudo ./vng -r ${{ matrix.kernels }} -- cat "${clocksource}")" = "kvm-clock" ]
+          [ "$(sudo ./vng -r ${{ matrix.kernelbinary }} -- cat "${clocksource}")" = "kvm-clock" ]
 
       # Compile kernel module
       - name: "Compile kernel module - amneziawg"
@@ -83,11 +84,11 @@ jobs:
           mkdir -p ~/module_ko
           git clone https://github.com/amnezia-vpn/amneziawg-linux-kernel-module        
           cd amneziawg-linux-kernel-module/src
-          curl -sL https://gitlab.com/xanmod/linux/-/archive/6.16.8-xanmod1/linux-6.16.8-xanmod1.tar.bz2 | tar x --bzip
-          ln -sf linux-6.16.8-xanmod1 kernel
-          sudo cp /usr/src/linux-headers-${{ matrix.kernels }}/scripts/Makefile.modfinal /usr/src/linux-headers-${{ matrix.kernels }}/scripts/Makefile.modfinal.old
-          sudo sed -i -e '/ifdef CONFIG_DEBUG_INFO_BTF_MODULES/,+2d' /usr/src/linux-headers-${{ matrix.kernels }}/scripts/Makefile.modfinal
-          ~/virtme-ng/vng -r ${{ matrix.kernels }} --rwdir=~/module_ko -- "make && cp *.ko /home/runner/module_ko/"
+          curl -sL https://gitlab.com/xanmod/linux/-/archive/${{ matrix.kernelsource }}/linux-${{ matrix.kernelsource }}.tar.bz2 | tar x --bzip
+          ln -sf linux-${{ matrix.kernelsource }} kernel
+          sudo cp /usr/src/linux-headers-${{ matrix.kernelbinary }}/scripts/Makefile.modfinal /usr/src/linux-headers-${{ matrix.kernelbinary }}/scripts/Makefile.modfinal.old
+          sudo sed -i -e '/ifdef CONFIG_DEBUG_INFO_BTF_MODULES/,+2d' /usr/src/linux-headers-${{ matrix.kernelbinary }}/scripts/Makefile.modfinal
+          ~/virtme-ng/vng -r ${{ matrix.kernelbinary }} --rwdir=~/module_ko -- "make && cp *.ko /home/runner/module_ko/"
           ls ~/module_ko
           
       # Compile kernel module
@@ -103,7 +104,7 @@ jobs:
           cd ~
           git clone https://github.com/OpenVPN/ovpn-dco
           cd ovpn-dco
-          ~/virtme-ng/vng -r ${{ matrix.kernels }} --rwdir=~/module_ko -- "make && cp ./drivers/net/ovpn-dco/*.ko /home/runner/module_ko/"
+          ~/virtme-ng/vng -r ${{ matrix.kernelbinary }} --rwdir=~/module_ko -- "make && cp ./drivers/net/ovpn-dco/*.ko /home/runner/module_ko/"
           ls ~/module_ko
 
       # Compile kernel module
@@ -121,7 +122,7 @@ jobs:
           git clone https://github.com/lxin/quic
           cd quic
           sh ./autogen.sh
-          ~/virtme-ng/vng -r ${{ matrix.kernels }} --rwdir=~/module_ko -- "./configure --host=x86_64-unknown-linux-gnu --prefix=/usr/local/quicktls && make && make install && cp /lib/modules/${{ matrix.kernels }}/extra/quic*.ko /home/runner/module_ko/"
+          ~/virtme-ng/vng -r ${{ matrix.kernelbinary }} --rwdir=~/module_ko -- "./configure --host=x86_64-unknown-linux-gnu --prefix=/usr/local/quicktls && make && make install && cp /lib/modules/${{ matrix.kernelbinary }}/extra/quic*.ko /home/runner/module_ko/"
           ls ~/module_ko
 
       - name: "Compression kernel module"
@@ -135,5 +136,5 @@ jobs:
       - name: Upload kernel module
         uses: actions/upload-artifact@v4
         with:
-          name: module_ko-${{ matrix.kernels }}
+          name: module_ko-${{ matrix.kernelbinary }}
           path: ~/module_ko/*.tlz

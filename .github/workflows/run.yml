@@ -84,8 +84,9 @@ jobs:
           sudo cp $(which lld) /usr/bin/ld          
           cd ~
           mkdir -p ~/module_ko
-          git clone https://github.com/amnezia-vpn/amneziawg-linux-kernel-module        
-          cd amneziawg-linux-kernel-module/src
+          git clone https://github.com/amnezia-vpn/amneziawg-linux-kernel-module
+          cd amneziawg-linux-kernel-module && git checkout b91fabacfa5ef75ecf82d9c6fbf1df83fb403b57
+          cd ./src
           curl -sL https://gitlab.com/xanmod/linux/-/archive/${{ matrix.kernelsource }}/linux-${{ matrix.kernelsource }}.tar.bz2 | tar x --bzip
           ln -sf linux-${{ matrix.kernelsource }} kernel
           sudo cp /usr/src/linux-headers-${{ matrix.kernelbinary }}/scripts/Makefile.modfinal /usr/src/linux-headers-${{ matrix.kernelbinary }}/scripts/Makefile.modfinal.old

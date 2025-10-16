@@ -13,8 +13,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        kernelbinary: [6.17.1-x64v3-xanmod1]
-        kernelsource: [6.17.1-xanmod1]
+        kernelbinary: [6.17.3-x64v3-xanmod1]
     runs-on: ${{ matrix.os }}
     steps:
       ### DEPENDENCIES ###
@@ -85,10 +84,7 @@ jobs:
           cd ~
           mkdir -p ~/module_ko
           git clone https://github.com/amnezia-vpn/amneziawg-linux-kernel-module
-          cd amneziawg-linux-kernel-module && git checkout b91fabacfa5ef75ecf82d9c6fbf1df83fb403b57
-          cd ./src
-          curl -sL https://gitlab.com/xanmod/linux/-/archive/${{ matrix.kernelsource }}/linux-${{ matrix.kernelsource }}.tar.bz2 | tar x --bzip
-          ln -sf linux-${{ matrix.kernelsource }} kernel
+          cd amneziawg-linux-kernel-module/src
           sudo cp /usr/src/linux-headers-${{ matrix.kernelbinary }}/scripts/Makefile.modfinal /usr/src/linux-headers-${{ matrix.kernelbinary }}/scripts/Makefile.modfinal.old
           sudo sed -i -e '/ifdef CONFIG_DEBUG_INFO_BTF_MODULES/,+2d' /usr/src/linux-headers-${{ matrix.kernelbinary }}/scripts/Makefile.modfinal
           ~/virtme-ng/vng -r ${{ matrix.kernelbinary }} --rwdir=~/module_ko -- "make && cp *.ko /home/runner/module_ko/"

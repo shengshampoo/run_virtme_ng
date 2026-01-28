@@ -27,7 +27,13 @@ jobs:
          echo 'deb [signed-by=/usr/share/keyrings/xanmod-archive-keyring.gpg] http://deb.xanmod.org releases main' | sudo tee /etc/apt/sources.list.d/xanmod-release.list
       - run: sudo apt update
       - run: sudo apt install --yes git qemu-kvm udev iproute2 busybox-static coreutils python3-requests libvirt-clients kbd kmod file rsync zstd udev linux-image-${{ matrix.kernelbinary }} linux-headers-${{ matrix.kernelbinary }}
-      
+
+      # Install dkms and add bcachefs apt-repository
+      - run: |
+         wget -qO- https://apt.bcachefs.org/apt.bcachefs.org.asc | sudo tee /etc/apt/trusted.gpg.d/apt.bcachefs.org.asc
+         wget -qO- "https://gist.githubusercontent.com/shengshampoo/1d0a95c771a9be46a8ffba981ccf959b/raw/9b4e33dd2e2401a38e6595be951da68e21f43b66/apt.bcachefs.org.sources" | tee /etc/apt/sources.list.d/apt.bcachefs.org.sources
+      - run: apt install -y dkms
+              
       ### END DEPENDENCIES ###
 
       # Checkout git repository
@@ -139,6 +145,19 @@ jobs:
           sh ./autogen.sh
           ~/virtme-ng/vng -r ${{ matrix.kernelbinary }} --rwdir=~/module_ko -- "./configure --host=x86_64-unknown-linux-gnu --prefix=/usr/local/quicktls && make && make install && cp /lib/modules/${{ matrix.kernelbinary }}/extra/quic*.ko /home/runner/module_ko/"
           ls ~/module_ko
+
+      # Compile kernel module
+      - name: "Install kernel dkms module - bcachefs"
+        env:
+          CC: $(which clang)
+          CXX: $(which clang++)
+          HOSTCC: $(which clang)
+          HOSTCXX: $(which clang++)
+          LDFLAGS: "-fuse-ld=lld -flto=thin"
+          HOSTLDFLAGS: "-fuse-ld=lld -flto=thin"
+        run: |        
+          cd ~
+          ~/virtme-ng/vng -r ${{ matrix.kernelbinary }} --rwdir=~/module_ko -- "apt install -y dkms bcachefs-tools"
 
       - name: "Compression kernel module"
         run: | 

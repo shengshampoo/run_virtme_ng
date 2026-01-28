@@ -158,7 +158,8 @@ jobs:
           HOSTLDFLAGS: "-fuse-ld=lld -flto=thin"
         run: |        
           cd ~
-          ~/virtme-ng/vng -r ${{ matrix.kernelbinary }} --rwdir=~/module_ko -- "sudo apt install -y dkms bcachefs-tools"
+          ~/virtme-ng/vng -r ${{ matrix.kernelbinary }} --rwdir=~/module_ko -- "sudo apt install -y bcachefs-tools && cp /lib/modules/${{ matrix.kernelbinary }}/updates/dkms/bcachefs.ko /home/runner/module_ko/"
+          ls ~/module_ko
 
       - name: "Compression kernel module"
         run: | 

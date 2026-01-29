@@ -1,0 +1,36 @@
+name: Docker Image CI - X86_64 dkms module for Unstable Debian Linux
+
+on:
+  push:
+    branches: [ "main" ]
+    tags:
+      - 'continuous'
+  pull_request:
+    branches: [ "main" ]
+  # run it manually
+  workflow_dispatch:    
+
+jobs:
+
+  build:
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build the Docker image
+      run: docker build --tag builder .    
+
+    - name: build bcachefs dkms module with debian unstable linux docker 
+      run: |
+        docker run --cidfile=builder.cid builder true
+        docker cp "$(cat builder.cid):work/artifact/." .
+
+    - name: Upload static program
+      uses: actions/upload-artifact@v4
+      with:
+        name: bcachefs.ko
+        path: ./*.tlz

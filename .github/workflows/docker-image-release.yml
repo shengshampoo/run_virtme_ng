@@ -1,0 +1,41 @@
+name: Docker Image CI - 3 X86_64 dkms module for Unstable Debian Linux
+
+on:
+  push:
+    branches: [ "main" ]
+    tags:
+      - 'continuous'
+  pull_request:
+    branches: [ "main" ]
+  # run it manually
+  workflow_dispatch:        
+
+jobs:
+
+  build:
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build the Docker image
+      run: docker build --tag builder .    
+
+    - name: build bcachefs dkms module with debian unstable linux docker 
+      run: |
+        docker run --cidfile=builder.cid builder true
+        docker cp "$(cat builder.cid):work/artifact/." .
+
+    - name: Upload binaries to release - bcachefs.ko
+      uses: svenstaro/upload-release-action@v2
+      with:
+        file: ./*.tlz
+        tag: refs/tags/continuous
+        overwrite: true
+        file_glob: true
+        body: "Build xanmod kernel module build with virtme-ng tools." 
+      
+        

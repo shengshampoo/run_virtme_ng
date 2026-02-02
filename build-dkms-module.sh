@@ -1,6 +1,6 @@
 #! /bin/bash
 
-#set -e
+set -e
 
 mkdir -p /work/artifact
 
@@ -18,7 +18,7 @@ apt install linux-image-$KRV linux-headers-$KRV linux-image-$KRW linux-headers-$
 # bcachefs dkms module
 wget -qO- https://apt.bcachefs.org/apt.bcachefs.org.asc | tee /etc/apt/trusted.gpg.d/apt.bcachefs.org.asc
 wget -qO- "https://gist.githubusercontent.com/shengshampoo/1d0a95c771a9be46a8ffba981ccf959b/raw/9b4e33dd2e2401a38e6595be951da68e21f43b66/apt.bcachefs.org.sources" | tee /etc/apt/sources.list.d/apt.bcachefs.org.sources
-apt update
+apt update -o Acquire::AllowInsecureRepositories=true -o Acquire::AllowDowngradeToInsecureRepositories=true
 apt install --yes bcachefs-tools
 
 cd /work/artifact

@@ -1,0 +1,191 @@
+name: Run to continuous tags
+
+on:
+  push:
+    branches: [ "main" ]
+    tags:
+      - 'continuous'
+  pull_request:
+    branches: [ "main" ]
+  # run it manually
+  workflow_dispatch:       
+
+jobs:
+  run:
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        kernelbinary: [6.19.4-x64v3-xanmod1]
+    runs-on: ${{ matrix.os }}
+    steps:
+      ### DEPENDENCIES ###
+
+      # Hard turn-off interactive mode
+      - run: echo 'debconf debconf/frontend select Noninteractive' | sudo debconf-set-selections
+
+      # Install XanMod Kernel and virtme_ng dependencies
+      - run: |
+         wget -qO - https://gitlab.com/afrd.gpg | sudo gpg --dearmor -o /usr/share/keyrings/xanmod-archive-keyring.gpg
+         echo 'deb [signed-by=/usr/share/keyrings/xanmod-archive-keyring.gpg] http://deb.xanmod.org releases main' | sudo tee /etc/apt/sources.list.d/xanmod-release.list
+      - run: sudo apt update
+      - run: sudo apt install --yes git qemu-kvm udev iproute2 busybox-static coreutils python3-requests libvirt-clients kbd kmod file rsync zstd udev linux-image-${{ matrix.kernelbinary }} linux-headers-${{ matrix.kernelbinary }}
+      
+      ### END DEPENDENCIES ###
+
+      # Checkout git repository
+      - uses: actions/checkout@v4
+      - name: Install LLVM and Clang
+        uses: KyleMayes/install-llvm-action@v2
+        with:
+          version: "19.1.7"
+          arch: "x64"            
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+      - name: Install dependencies
+        run: |
+            python -m pip install --upgrade pip
+      
+      - name: Install virtme-ng and check xanmod kernel version
+        run: |
+          cd ~
+          git clone https://github.com/arighi/virtme-ng.git
+          cd virtme-ng
+          BUILD_VIRTME_NG_INIT=1 pip install .
+          sudo ./vng -r ${{ matrix.kernelbinary }} -- uname -a
+          
+      
+      # Setup KVM support
+      - name: "KVM support"
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      # Re-run with KVM support
+      - name: "Check KVM support"
+        run: |
+          cd ~/virtme-ng
+          clocksource="/sys/devices/system/clocksource/clocksource0/current_clocksource"
+          [ "$(sudo ./vng -r ${{ matrix.kernelbinary }} -- cat "${clocksource}")" = "kvm-clock" ]
+
+      # Compile kernel module
+      - name: "Compile kernel module - amneziawg"
+        env:
+          CC: $(which clang)
+          CXX: $(which clang++)
+          HOSTCC: $(which clang)
+          HOSTCXX: $(which clang++)
+          LDFLAGS: "-fuse-ld=lld -flto=thin"
+          HOSTLDFLAGS: "-fuse-ld=lld -flto=thin"
+        run: |
+          sudo cp $(which clang) /usr/bin/cc
+          sudo cp $(which clang++) /usr/bin/c++
+          sudo cp $(which lld) /usr/bin/ld          
+          cd ~
+          mkdir -p ~/module_ko
+          git clone https://github.com/amnezia-vpn/amneziawg-linux-kernel-module
+          cd amneziawg-linux-kernel-module
+          ln -s src amneziawg-1.0.0
+          curl -sL https://gist.githubusercontent.com/shengshampoo/4a88fa6a68277889654b5e38fa0709a3/raw/3d813e303d767376aaffc0e563f0c312e0b5bd1f/amneziawg-linux-kernel-module-kernel619.patch | patch -p0
+          cd src
+          sudo cp /usr/src/linux-headers-${{ matrix.kernelbinary }}/scripts/Makefile.modfinal /usr/src/linux-headers-${{ matrix.kernelbinary }}/scripts/Makefile.modfinal.old
+          sudo sed -i -e '/ifdef CONFIG_DEBUG_INFO_BTF_MODULES/,+2d' /usr/src/linux-headers-${{ matrix.kernelbinary }}/scripts/Makefile.modfinal
+          ~/virtme-ng/vng -r ${{ matrix.kernelbinary }} --rwdir=~/module_ko -- "make && cp *.ko /home/runner/module_ko/"
+          ls ~/module_ko
+          
+      # Compile kernel module
+      - name: "Compile kernel module - ovpn-dco"
+        env:
+          CC: $(which clang)
+          CXX: $(which clang++)
+          HOSTCC: $(which clang)
+          HOSTCXX: $(which clang++)
+          LDFLAGS: "-fuse-ld=lld -flto=thin"
+          HOSTLDFLAGS: "-fuse-ld=lld -flto=thin"
+        run: |        
+          cd ~
+          git clone https://github.com/OpenVPN/ovpn-dco
+          cd ovpn-dco
+          ~/virtme-ng/vng -r ${{ matrix.kernelbinary }} --rwdir=~/module_ko -- "make && cp ./drivers/net/ovpn-dco/*.ko /home/runner/module_ko/"
+          ls ~/module_ko
+
+      # Compile kernel module
+      - name: "Compile kernel module - LotSpeed"
+        env:
+          CC: $(which clang)
+          CXX: $(which clang++)
+          HOSTCC: $(which clang)
+          HOSTCXX: $(which clang++)
+          LDFLAGS: "-fuse-ld=lld -flto=thin"
+          HOSTLDFLAGS: "-fuse-ld=lld -flto=thin"
+        run: |        
+          cd ~
+          git clone -b zeta-tcp https://github.com/uk0/lotspeed.git
+          cd lotspeed
+          ~/virtme-ng/vng -r ${{ matrix.kernelbinary }} --rwdir=~/module_ko -- "make && cp *.ko /home/runner/module_ko/"
+          ls ~/module_ko        
+
+      # Compile kernel module
+      - name: "Compile kernel module - quic"
+        env:
+          CC: $(which clang)
+          CXX: $(which clang++)
+          HOSTCC: $(which clang)
+          HOSTCXX: $(which clang++)
+          LDFLAGS: "-fuse-ld=lld -flto=thin"
+          HOSTLDFLAGS: "-fuse-ld=lld -flto=thin"
+        run: |        
+          cd ~
+          sudo apt install --yes git curl pkg-config libgnutls28-dev libtool gnutls-bin libelf-dev libclang-common-19-dev
+          git clone https://github.com/lxin/quic
+          cd quic
+          sh ./autogen.sh
+          ~/virtme-ng/vng -r ${{ matrix.kernelbinary }} --rwdir=~/module_ko -- "./configure --host=x86_64-unknown-linux-gnu --prefix=/usr/local/quicktls && make && make install && cp /lib/modules/${{ matrix.kernelbinary }}/extra/quic*.ko /home/runner/module_ko/"
+          ls ~/module_ko
+
+      - name: "Compression kernel module"
+        run: | 
+          sudo apt install --yes lzip
+          cp ~/module_ko/*.ko .
+          tar -I 'lzip -9' -vcf amneziawg.ko.tlz ./amneziawg.ko
+          tar -I 'lzip -9' -vcf ovpn-dco-v2.ko.tlz ./ovpn-dco-v2.ko
+          tar -I 'lzip -9' -vcf lotspeed.ko.tlz ./lotspeed.ko
+          tar -I 'lzip -9' -vcf quic.ko.tlz ./quic*.ko
+
+      - name: Upload binaries to release - amneziawg.ko
+        uses: svenstaro/upload-release-action@v2
+        with:
+          file: ./amneziawg.ko.tlz
+          asset_name: amneziawg.ko-${{ matrix.kernelbinary }}.tlz
+          tag: refs/tags/continuous
+          overwrite: true
+          body: "Build xanmod kernel module build with virtme-ng tools." 
+      
+      - name: Upload binaries to release - ovpn-dco-v2.ko
+        uses: svenstaro/upload-release-action@v2
+        with:
+          file: ./ovpn-dco-v2.ko.tlz
+          asset_name: ovpn-dco-v2.ko-${{ matrix.kernelbinary }}.tlz
+          tag: refs/tags/continuous
+          overwrite: true
+          body: "Build xanmod kernel module build with virtme-ng tools."    
+
+      - name: Upload binaries to release - lotspeed.ko
+        uses: svenstaro/upload-release-action@v2
+        with:
+          file: ./lotspeed.ko.tlz
+          asset_name: lotspeed.ko-${{ matrix.kernelbinary }}.tlz
+          tag: refs/tags/continuous
+          overwrite: true
+          body: "Build xanmod kernel module build with virtme-ng tools."    
+
+      - name: Upload binaries to release - quic.ko
+        uses: svenstaro/upload-release-action@v2
+        with:
+          file: ./quic.ko.tlz
+          asset_name: quic.ko-${{ matrix.kernelbinary }}.tlz
+          tag: refs/tags/continuous
+          overwrite: true
+          body: "Build xanmod kernel module build with virtme-ng tools."              

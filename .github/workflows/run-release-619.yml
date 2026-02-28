@@ -1,4 +1,4 @@
-name: Run to continuous tags
+name: Run to continuous tags for kernel version over 6.19
 
 on:
   push:

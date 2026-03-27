@@ -135,7 +135,7 @@ jobs:
           cd ~
           sudo apt install --yes git curl pkg-config libgnutls28-dev libtool gnutls-bin libelf-dev libclang-common-19-dev
           git clone https://github.com/lxin/quic
-          cd quic && git checkout fb8b83f531a128f17d78d12cb8b5823ec6ce3984
+          cd quic && git checkout 20e4a31c0a1b4ba6b904417b6b31f11e35d90588
           sh ./autogen.sh
           ~/virtme-ng/vng -r ${{ matrix.kernelbinary }} --rwdir=~/module_ko -- "./configure --host=x86_64-unknown-linux-gnu --prefix=/usr/local/quicktls && make && make install && cp /lib/modules/${{ matrix.kernelbinary }}/extra/quic*.ko /home/runner/module_ko/"
           ls ~/module_ko

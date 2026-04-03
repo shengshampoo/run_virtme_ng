@@ -15,7 +15,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        kernelbinary: [6.19.11-x64v3-xanmod1]
+        kernelbinary: [6.19.11-x64v3-xanmod1, 6.18.21-x64v3-xanmod1, 6.18.19-rt-x64v3-xanmod1]
     runs-on: ${{ matrix.os }}
     steps:
       ### DEPENDENCIES ###
@@ -137,7 +137,7 @@ jobs:
           cd ~
           sudo apt install --yes git curl pkg-config libgnutls28-dev libtool gnutls-bin libelf-dev libclang-common-19-dev
           git clone https://github.com/lxin/quic
-          cd quic
+          cd quic && git checkout 3a7b82e66dd5c39dd3b896badf93b41834691d4c
           sh ./autogen.sh
           ~/virtme-ng/vng -r ${{ matrix.kernelbinary }} --rwdir=~/module_ko -- "./configure --host=x86_64-unknown-linux-gnu --prefix=/usr/local/quicktls && make && make install && cp /lib/modules/${{ matrix.kernelbinary }}/extra/quic*.ko /home/runner/module_ko/"
           ls ~/module_ko

@@ -131,6 +131,10 @@ jobs:
           HOSTCXX: $(which clang++)
           LDFLAGS: "-fuse-ld=lld -flto=thin"
           HOSTLDFLAGS: "-fuse-ld=lld -flto=thin"
+          CFLAGS: "-Wno-incompatible-function-pointer-types"
+          CXXFLAGS: "-Wno-incompatible-function-pointer-types"
+          HOSTCFLAGS: "-Wno-incompatible-function-pointer-types"
+          HOSTCXXFLAGS: "-Wno-incompatible-function-pointer-types"
         run: |        
           cd ~
           sudo apt install --yes git curl pkg-config libgnutls28-dev libtool gnutls-bin libelf-dev libclang-common-19-dev

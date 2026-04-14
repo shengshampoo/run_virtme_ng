@@ -15,7 +15,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        kernelbinary: [6.19.12-x64v3-xanmod1, 6.18.22-x64v3-xanmod1, 6.18.22-rt-x64v3-xanmod1]
+        kernelbinary: [6.19.11-x64v3-xanmod1, 6.18.21-x64v3-xanmod1, 6.18.19-rt-x64v3-xanmod1]
     runs-on: ${{ matrix.os }}
     steps:
       ### DEPENDENCIES ###
@@ -93,22 +93,6 @@ jobs:
           ls ~/module_ko
           
       # Compile kernel module
-      - name: "Compile kernel module - ovpn-dco"
-        env:
-          CC: $(which clang)
-          CXX: $(which clang++)
-          HOSTCC: $(which clang)
-          HOSTCXX: $(which clang++)
-          LDFLAGS: "-fuse-ld=lld -flto=thin"
-          HOSTLDFLAGS: "-fuse-ld=lld -flto=thin"
-        run: |        
-          cd ~
-          git clone https://github.com/OpenVPN/ovpn-dco
-          cd ovpn-dco
-          ~/virtme-ng/vng -r ${{ matrix.kernelbinary }} --rwdir=~/module_ko -- "make && cp ./drivers/net/ovpn-dco/*.ko /home/runner/module_ko/"
-          ls ~/module_ko
-
-      # Compile kernel module
       - name: "Compile kernel module - LotSpeed"
         env:
           CC: $(which clang)
@@ -158,16 +142,7 @@ jobs:
           asset_name: amneziawg.ko-${{ matrix.kernelbinary }}.tlz
           tag: refs/tags/continuous
           overwrite: true
-          body: "Build xanmod kernel module build with virtme-ng tools." 
-      
-      - name: Upload binaries to release - ovpn-dco-v2.ko
-        uses: svenstaro/upload-release-action@v2
-        with:
-          file: ./ovpn-dco-v2.ko.tlz
-          asset_name: ovpn-dco-v2.ko-${{ matrix.kernelbinary }}.tlz
-          tag: refs/tags/continuous
-          overwrite: true
-          body: "Build xanmod kernel module build with virtme-ng tools."    
+          body: "Build xanmod kernel module build with virtme-ng tools."   
 
       - name: Upload binaries to release - lotspeed.ko
         uses: svenstaro/upload-release-action@v2

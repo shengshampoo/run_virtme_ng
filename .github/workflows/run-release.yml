@@ -131,7 +131,6 @@ jobs:
           sudo apt install --yes lzip
           cp ~/module_ko/*.ko .
           tar -I 'lzip -9' -vcf amneziawg.ko.tlz ./amneziawg.ko
-          tar -I 'lzip -9' -vcf ovpn-dco-v2.ko.tlz ./ovpn-dco-v2.ko
           tar -I 'lzip -9' -vcf lotspeed.ko.tlz ./lotspeed.ko
           tar -I 'lzip -9' -vcf quic.ko.tlz ./quic*.ko
 

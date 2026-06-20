@@ -122,7 +122,7 @@ jobs:
           HOSTCXXFLAGS: "$(CXXFLAGS) -Wno-incompatible-function-pointer-types"
         run: |        
           cd ~
-          sudo apt install --yes git curl pkg-config libgnutls28-dev libtool gnutls-bin libelf-dev libclang-common-19-dev
+          sudo apt install --yes git curl pkg-config libgnutls28-dev libtool gnutls-bin libelf-dev
           git clone https://github.com/lxin/quic
           cd quic && git checkout 3a7b82e66dd5c39dd3b896badf93b41834691d4c
           sh ./autogen.sh

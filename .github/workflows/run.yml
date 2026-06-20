@@ -119,11 +119,12 @@ jobs:
           HOSTCXX: $(which clang++)
           LDFLAGS: "-fuse-ld=lld -flto=thin"
           HOSTLDFLAGS: "-fuse-ld=lld -flto=thin"
-          CFLAGS: "$(CFLAGS) -Wno-incompatible-function-pointer-types"
-          CXXFLAGS: "$(CXXFLAGS) -Wno-incompatible-function-pointer-types"
-          HOSTCFLAGS: "$(CFLAGS) -Wno-incompatible-function-pointer-types"
-          HOSTCXXFLAGS: "$(CXXFLAGS) -Wno-incompatible-function-pointer-types"
         run: |        
+          # Dynamically find the major version installed by the action
+          LLVM_VERSION=$(clang -dumpversion | cut -d. -f1)
+          # Inject the exact internal Clang header path
+          export CFLAGS="-isystem $LLVM_PATH/lib/clang/$LLVM_VERSION/include"
+          export CXXFLAGS="-isystem $LLVM_PATH/lib/clang/$LLVM_VERSION/include"
           cd ~
           sudo apt install --yes git curl pkg-config libgnutls28-dev libtool gnutls-bin libelf-dev
           git clone https://github.com/lxin/quic

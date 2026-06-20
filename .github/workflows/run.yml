@@ -44,9 +44,10 @@ jobs:
       - name: Install dependencies
         run: |
             python -m pip install --upgrade pip
-      - name: Set Environment Variables for libclang
-        run: |
-            echo "LIBCLANG_PATH=${{ env.LLVM_PATH }}/lib" >> $GITHUB_ENV
+      - name: Symlink libclang.so (Linux)
+        if: contains(matrix.os, 'ubuntu')
+        run: sudo ln -s libclang-11.so.1 /lib/x86_64-linux-gnu/libclang.so
+        working-directory: ${{ env.LLVM_PATH }}/lib
       - name: Install virtme-ng and check xanmod kernel version
         run: |
           cd ~

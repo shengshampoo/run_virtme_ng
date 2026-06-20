@@ -44,7 +44,9 @@ jobs:
       - name: Install dependencies
         run: |
             python -m pip install --upgrade pip
-      
+      - name: Set Environment Variables for libclang
+        run: |
+            echo "LIBCLANG_PATH=${{ env.LLVM_PATH }}/lib" >> $GITHUB_ENV
       - name: Install virtme-ng and check xanmod kernel version
         run: |
           cd ~

@@ -123,8 +123,8 @@ jobs:
           # Dynamically find the major version installed by the action
           LLVM_VERSION=$(clang -dumpversion | cut -d. -f1)
           # Inject the exact internal Clang header path
-          export CFLAGS="-isystem $LLVM_PATH/lib/clang/$LLVM_VERSION/include"
-          export CXXFLAGS="-isystem $LLVM_PATH/lib/clang/$LLVM_VERSION/include"
+          export CFLAGS="-isystem $LLVM_PATH/lib/clang/$LLVM_VERSION/include -Wno-incompatible-function-pointer-types"
+          export CXXFLAGS="-isystem $LLVM_PATH/lib/clang/$LLVM_VERSION/include -Wno-incompatible-function-pointer-types"
           cd ~
           sudo apt install --yes git curl pkg-config libgnutls28-dev libtool gnutls-bin libelf-dev
           git clone https://github.com/lxin/quic

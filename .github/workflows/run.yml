@@ -132,6 +132,8 @@ jobs:
           # Inject the exact internal Clang header path
           export CFLAGS="-isystem $LLVM_PATH/lib/clang/$LLVM_VERSION/include"
           export CXXFLAGS="-isystem $LLVM_PATH/lib/clang/$LLVM_VERSION/include"
+          export C_INCLUDE_PATH="$LLVM_PATH/lib/clang/$LLVM_VERSION/include:$C_INCLUDE_PATH"
+          export CXX_INCLUDE_PATH="$LLVM_PATH/lib/clang/$LLVM_VERSION/include:$CXX_INCLUDE_PATH"
           cd ~
           sudo apt install --yes git curl pkg-config libgnutls28-dev libtool gnutls-bin libelf-dev
           git clone https://github.com/lxin/quic

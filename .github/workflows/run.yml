@@ -33,7 +33,7 @@ jobs:
       # Checkout git repository
       - uses: actions/checkout@v4
       - name: Install LLVM 21 and Clang 21 with kernel version 7.x
-        if: contains(matrix.kernelbinary, '7.')
+        if: contains(matrix.kernelbinary, '7.1')
         uses: KyleMayes/install-llvm-action@v2
         with:
           version: "21.1.8"

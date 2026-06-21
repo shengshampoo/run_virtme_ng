@@ -51,10 +51,6 @@ jobs:
       - name: Install dependencies
         run: |
             python -m pip install --upgrade pip
-      - name: Symlink libclang.so (Linux)
-        if: contains(matrix.os, 'ubuntu')
-        run: sudo ln -s libclang-11.so.1 /lib/x86_64-linux-gnu/libclang.so
-        working-directory: ${{ env.LLVM_PATH }}/lib
       - name: Install virtme-ng and check xanmod kernel version
         run: |
           cd ~
@@ -127,13 +123,6 @@ jobs:
           LDFLAGS: "-fuse-ld=lld -flto=thin"
           HOSTLDFLAGS: "-fuse-ld=lld -flto=thin"
         run: |        
-          # Dynamically find the major version installed by the action
-          LLVM_VERSION=$(clang -dumpversion | cut -d. -f1)
-          # Inject the exact internal Clang header path
-          export CFLAGS="-isystem $LLVM_PATH/lib/clang/$LLVM_VERSION/include"
-          export CXXFLAGS="-isystem $LLVM_PATH/lib/clang/$LLVM_VERSION/include"
-          export C_INCLUDE_PATH="$LLVM_PATH/lib/clang/$LLVM_VERSION/include:$C_INCLUDE_PATH"
-          export CXX_INCLUDE_PATH="$LLVM_PATH/lib/clang/$LLVM_VERSION/include:$CXX_INCLUDE_PATH"
           cd ~
           sudo apt install --yes git curl pkg-config libgnutls28-dev libtool gnutls-bin libelf-dev
           git clone https://github.com/lxin/quic
@@ -141,7 +130,7 @@ jobs:
           # https://github.com/lxin/quic/issues/75
           sed -i '1297s/ifdef IP_TUNNEL_RECURSION_LIMIT/if LINUX_VERSION_CODE >= KERNEL_VERSION(7, 1, 0)/' ./modules/net/quic/socket.c
           sh ./autogen.sh
-          ~/virtme-ng/vng -r ${{ matrix.kernelbinary }} --rwdir=~/module_ko -- "./configure --host=x86_64-unknown-linux-gnu --prefix=/usr/local/quicktls && make && make install && cp /lib/modules/${{ matrix.kernelbinary }}/extra/quic*.ko /home/runner/module_ko/"
+          ~/virtme-ng/vng -r ${{ matrix.kernelbinary }} --rwdir=~/module_ko -- "./configure --host=x86_64-unknown-linux-gnu --prefix=/usr/local/quicktls && make CC=clang CXX=clang++ && make install && cp /lib/modules/${{ matrix.kernelbinary }}/extra/quic*.ko /home/runner/module_ko/"
           ls ~/module_ko
 
       - name: "Compression kernel module"

@@ -130,7 +130,7 @@ jobs:
           # https://github.com/lxin/quic/issues/75
           sed -i '1297s/ifdef IP_TUNNEL_RECURSION_LIMIT/if LINUX_VERSION_CODE >= KERNEL_VERSION(7, 1, 0)/' ./modules/net/quic/socket.c
           sh ./autogen.sh
-          ~/virtme-ng/vng -r ${{ matrix.kernelbinary }} --rwdir=~/module_ko -- "./configure --host=x86_64-unknown-linux-gnu --prefix=/usr/local/quicktls &&  make CC=clang CXX=clang++ CFLAGS="-Wno-unknown-warning-option" CXXFLAGS="-Wno-unknown-warning-option" && make install && cp /lib/modules/${{ matrix.kernelbinary }}/extra/quic*.ko /home/runner/module_ko/"
+          ~/virtme-ng/vng -r ${{ matrix.kernelbinary }} --rwdir=~/module_ko -- "./configure --host=x86_64-unknown-linux-gnu --prefix=/usr/local/quicktls && make CC=clang CXX=clang++ CFLAGS="-Wno-unknown-warning-option" CXXFLAGS="-Wno-unknown-warning-option" && make install && cp /lib/modules/${{ matrix.kernelbinary }}/extra/quic*.ko /home/runner/module_ko/"
           ls ~/module_ko
 
       - name: "Compression kernel module"

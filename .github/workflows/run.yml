@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        kernelbinary: [7.1.1-x64v3-xanmod1, 7.0.13-x64v3-xanmod1, 6.18.36-x64v3-xanmod1, 6.18.35-rt-x64v3-xanmod1]
+        kernelbinary: [7.1.1-x64v3-xanmod1, 6.18.36-x64v3-xanmod1, 6.18.35-rt-x64v3-xanmod1]
     runs-on: ${{ matrix.os }}
     steps:
       ### DEPENDENCIES ###
@@ -32,11 +32,18 @@ jobs:
 
       # Checkout git repository
       - uses: actions/checkout@v4
-      - name: Install LLVM and Clang
+      - name: Install LLVM 21 and Clang 21 with kernel version 7.x
+        if: contains(matrix.kernelbinary, '7.')
         uses: KyleMayes/install-llvm-action@v2
         with:
           version: "21.1.8"
-          arch: "x64"            
+          arch: "x64"
+      - name: Install LLVM 19 and Clang 19 with kernel version 6.x
+        if: contains(matrix.kernelbinary, '6.18')
+        uses: KyleMayes/install-llvm-action@v2
+        with:
+          version: "19.1.7"
+          arch: "x64"    
       - name: Set up Python 3.13
         uses: actions/setup-python@v6
         with:

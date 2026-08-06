@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        kernelbinary: [7.1.5-x64v3-xanmod1, 6.18.41-x64v3-xanmod1, 6.18.41-rt-x64v3-xanmod1]
+        kernelbinary: [7.1.6-x64v3-xanmod1, 6.18.42-x64v3-xanmod1, 6.18.41-rt-x64v3-xanmod1]
     runs-on: ${{ matrix.os }}
     steps:
       ### DEPENDENCIES ###
@@ -89,8 +89,8 @@ jobs:
           sudo cp $(which lld) /usr/bin/ld          
           cd ~
           mkdir -p ~/module_ko
-          #git clone https://github.com/amnezia-vpn/amneziawg-linux-kernel-module
-          git clone -b sk-715 https://github.com/K900/amneziawg-linux-kernel-module
+          git clone https://github.com/amnezia-vpn/amneziawg-linux-kernel-module
+          # git clone -b sk-715 https://github.com/K900/amneziawg-linux-kernel-module
           cd amneziawg-linux-kernel-module/src
           sudo cp /usr/src/linux-headers-${{ matrix.kernelbinary }}/scripts/Makefile.modfinal /usr/src/linux-headers-${{ matrix.kernelbinary }}/scripts/Makefile.modfinal.old
           sudo sed -i -e '/ifdef CONFIG_DEBUG_INFO_BTF_MODULES/,+2d' /usr/src/linux-headers-${{ matrix.kernelbinary }}/scripts/Makefile.modfinal

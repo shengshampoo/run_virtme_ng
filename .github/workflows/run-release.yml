@@ -133,7 +133,7 @@ jobs:
           # https://github.com/lxin/quic/issues/75
           sed -i '1302s/(7, 1, 0)/(6, 18, 42)/' ./modules/net/quic/socket.c
           sh ./autogen.sh
-          ~/virtme-ng/vng -r ${{ matrix.kernelbinary }} --rwdir=~/module_ko -- "./configure --host=x86_64-unknown-linux-gnu --prefix=/usr/local/quicktls && make CC=clang CXX=clang++ CFLAGS="-Wno-unknown-warning-option" CXXFLAGS="-Wno-unknown-warning-option" && make install && cp /lib/modules/${{ matrix.kernelbinary }}/extra/quic*.ko /home/runner/module_ko/"
+          #~/virtme-ng/vng -r ${{ matrix.kernelbinary }} --rwdir=~/module_ko -- "./configure --host=x86_64-unknown-linux-gnu --prefix=/usr/local/quicktls && make CC=clang CXX=clang++ CFLAGS="-Wno-unknown-warning-option" CXXFLAGS="-Wno-unknown-warning-option" && make install && cp /lib/modules/${{ matrix.kernelbinary }}/extra/quic*.ko /home/runner/module_ko/"
           ls ~/module_ko
 
       - name: "Compression kernel module"
@@ -142,7 +142,7 @@ jobs:
           cp ~/module_ko/*.ko .
           tar -I 'lzip -9' -vcf amneziawg.ko.tlz ./amneziawg.ko
           tar -I 'lzip -9' -vcf lotspeed.ko.tlz ./lotspeed.ko
-          tar -I 'lzip -9' -vcf quic.ko.tlz ./quic*.ko
+          #tar -I 'lzip -9' -vcf quic.ko.tlz ./quic*.ko
 
       - name: Upload binaries to release - amneziawg.ko
         uses: svenstaro/upload-release-action@v2
@@ -162,11 +162,11 @@ jobs:
           overwrite: true
           body: "Build xanmod kernel module build with virtme-ng tools."    
 
-      - name: Upload binaries to release - quic.ko
-        uses: svenstaro/upload-release-action@v2
-        with:
-          file: ./quic.ko.tlz
-          asset_name: quic.ko-${{ matrix.kernelbinary }}.tlz
-          tag: refs/tags/continuous
-          overwrite: true
-          body: "Build xanmod kernel module build with virtme-ng tools."              
+      #- name: Upload binaries to release - quic.ko
+      #  uses: svenstaro/upload-release-action@v2
+      #  with:
+      #    file: ./quic.ko.tlz
+      #    asset_name: quic.ko-${{ matrix.kernelbinary }}.tlz
+      #    tag: refs/tags/continuous
+      #    overwrite: true
+      #    body: "Build xanmod kernel module build with virtme-ng tools."              

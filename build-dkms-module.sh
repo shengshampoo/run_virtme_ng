@@ -13,8 +13,9 @@ echo 'deb [signed-by=/etc/apt/keyrings/xanmod-archive-keyring.gpg] http://deb.xa
 KRV=$(wget -qO-  "https://gitlab.com/api/v4/projects/51590166/repository/tags?order_by=updated&search=6.18" | jq -r '.[0].name'  | sed -e s/-.*//)-x64v3-xanmod1
 KRW=$(wget -qO-  "https://gitlab.com/api/v4/projects/51590166/repository/tags?order_by=updated&search=rt" | jq -r '.[0].name'  | sed -e s/-x.*//)-x64v3-xanmod1
 KRX=$(wget -qO-  "https://gitlab.com/api/v4/projects/51590166/repository/tags?order_by=updated&search=7.1" | jq -r '.[0].name'  | sed -e s/-.*//)-x64v3-xanmod1
+KRY=$(wget -qO-  "https://gitlab.com/api/v4/projects/51590166/repository/tags?order_by=updated&search=7.2" | jq -r '.[0].name'  | sed -e s/-.*//)-x64v3-xanmod1
 apt update -o Acquire::AllowInsecureRepositories=true -o Acquire::AllowDowngradeToInsecureRepositories=true
-apt install linux-image-$KRV linux-headers-$KRV linux-image-$KRW linux-headers-$KRW linux-image-$KRX linux-headers-$KRX
+apt install linux-image-$KRV linux-headers-$KRV linux-image-$KRW linux-headers-$KRW linux-image-$KRX linux-headers-$KRX linux-image-$KRY linux-headers-$KRY
  
 # bcachefs dkms module
 wget -qO- https://apt.bcachefs.org/apt.bcachefs.org.asc | tee /etc/apt/trusted.gpg.d/apt.bcachefs.org.asc
@@ -29,3 +30,5 @@ cp /lib/modules/$KRW/updates/dkms/bcachefs.ko .
 tar -I 'lzip -9' --remove-files -vcf bcachefs.ko-$KRW.tlz ./bcachefs.ko
 cp /lib/modules/$KRX/updates/dkms/bcachefs.ko .
 tar -I 'lzip -9' --remove-files -vcf bcachefs.ko-$KRX.tlz ./bcachefs.ko
+cp /lib/modules/$KRY/updates/dkms/bcachefs.ko .
+tar -I 'lzip -9' --remove-files -vcf bcachefs.ko-$KRY.tlz ./bcachefs.ko

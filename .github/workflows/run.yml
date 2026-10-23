@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        kernelbinary: [7.2.10-x64v3-xanmod1, 7.1.13-x64v3-xanmod1, 6.18.56-x64v3-xanmod1, 6.18.55-rt-x64v3-xanmod1]
+        kernelbinary: [7.2.12-x64v3-xanmod1, 7.1.13-x64v3-xanmod1, 6.18.58-x64v3-xanmod1, 6.18.58-rt-x64v3-xanmod1]
     runs-on: ${{ matrix.os }}
     steps:
       ### DEPENDENCIES ###
